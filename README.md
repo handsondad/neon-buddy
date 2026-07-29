@@ -1,6 +1,8 @@
-# 小洋人 MVP（React + TypeScript）
+# Neon Buddy（React + TypeScript）
 
-本项目已完成从原生静态脚本到 React + TypeScript 的整体重构。
+面向 2–8 岁儿童家长的真实互动记录工具：每天用 3 分钟记录一次互动，获得温和、可信、可执行的陪伴建议。
+
+> 本产品不提供医疗、心理诊断或治疗建议。数据默认只保存在当前设备，用户可在“设置与隐私”中导出或删除。
 
 ## 技术栈
 
@@ -71,6 +73,9 @@
 - 多账号隔离存储
 - 云快照上传/恢复/列表
 - 云仓储抽象层（mock-local/http）
+- 首次使用引导（孩子称呼、成长阶段、记录视角）
+- 今日陪伴闭环（快速记录入口、观察-感受-下一步反馈）
+- 设置与隐私中心（数据导出、删除、安全边界与云模式提示）
 
 ## 本地启动（由你执行 Node）
 
@@ -95,6 +100,8 @@ npm run build
 ## 目录结构
 
 - `src/App.tsx`：页面与主业务编排
+- `src/components/Onboarding.tsx`：首次使用引导
+- `src/components/Settings.tsx`：隐私、数据与安全边界
 - `src/config/appConfig.ts`：内容规则与云配置
 - `src/lib/storage.ts`：账号与本地状态存取
 - `src/lib/cloudRepository.ts`：云仓储抽象（mock/http）

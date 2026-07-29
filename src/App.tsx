@@ -426,7 +426,8 @@ export default function App() {
   }
 
   function onCompleteOnboarding(name: string, stage: AppState["stage"], role: CaregiverRole): void {
-    const nextState = { ...state, childName: name, stage };
+    const stageDay = stage === "newborn" ? 1 : stage === "explorer" ? 31 : 91;
+    const nextState = { ...state, childName: name, stage, day: stageDay };
     setState(nextState);
     saveState(accountId, nextState);
     setFormCaregiverRole(role);
@@ -467,6 +468,7 @@ export default function App() {
     persistCurrentAccountId(normalized);
     setAccountId(normalized);
     setState(normalizeAppState(loadState(normalized, defaultState)));
+    setShowOnboarding(!hasCompletedOnboarding(normalized));
     setAccountInput("");
     setCloudStatus({ message: `已切换到账号 ${normalized}`, type: "ok" });
   }
