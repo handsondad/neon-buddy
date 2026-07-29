@@ -7,6 +7,11 @@ interface EventFormProps {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onClearDetail: (showMessage: boolean) => void;
   onChangeEventType: (type: EventType) => void;
+  onChangeDetail: (detail: string) => void;
+  caregiverRole: CaregiverRole;
+  intensity: number;
+  onChangeCaregiverRole: (role: CaregiverRole) => void;
+  onChangeIntensity: (intensity: number) => void;
   onFillFromLatestSameType: () => void;
   onApplyQuickTemplate: (text: string) => void;
   onStructureEventDetail: () => void;
@@ -60,6 +65,11 @@ export function EventForm({
   onSubmit,
   onClearDetail,
   onChangeEventType,
+  onChangeDetail,
+  caregiverRole,
+  intensity,
+  onChangeCaregiverRole,
+  onChangeIntensity,
   onFillFromLatestSameType,
   onApplyQuickTemplate,
   onStructureEventDetail,
@@ -123,6 +133,7 @@ export function EventForm({
     <div className="event-form-container">
       <div className="form-section">
         <h2>记录真实事件</h2>
+        <p className="form-intro">用 1–3 分钟写下今天发生的一件事，先记录事实，不需要写得完美。</p>
         <form className="event-form" onSubmit={onSubmit}>
           <div className="form-group">
             <label htmlFor="eventType">事件类型</label>
@@ -145,7 +156,8 @@ export function EventForm({
             <label htmlFor="caregiverRole">照护者视角</label>
             <select
               id="caregiverRole"
-              value="parent"
+              value={caregiverRole}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => onChangeCaregiverRole(e.target.value as CaregiverRole)}
               className="form-select"
             >
               <option value="parent">家长</option>
@@ -156,13 +168,14 @@ export function EventForm({
           </div>
 
           <div className="form-group">
-            <label htmlFor="eventIntensity">当时强度：3</label>
+            <label htmlFor="eventIntensity">当时强度：{intensity}</label>
             <input
               id="eventIntensity"
               type="range"
               min={1}
               max={5}
-              value={3}
+              value={intensity}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeIntensity(Number(e.target.value))}
               className="form-range"
             />
             <div className="intensity-labels">
@@ -232,10 +245,7 @@ export function EventForm({
               rows={4}
               maxLength={220}
               value={currentDetail}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-                const eventType = currentEventType;
-                const nextDrafts = { ...state.eventDrafts, [eventType]: e.target.value };
-              }}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChangeDetail(e.target.value)}
               onKeyDown={handleTextKeyDown}
               placeholder="例如：今天午睡前一直哭，我抱着他哼歌，五分钟后慢慢安静下来。"
               className="form-textarea"
@@ -258,8 +268,16 @@ export function EventForm({
         ) : (
           <div className="feedback-content">
             <div className="feedback-card child-response">
-              <h3>孩子回应</h3>
+              <h3>孩子可能的回应</h3>
               <p>{latestFeedback.childText}</p>
+            </div>
+            <div className="feedback-card observation">
+              <h3>发生了什么</h3>
+              <p>{latestFeedback.detail}</p>
+            </div>
+            <div className="feedback-card next-action">
+              <h3>下一步可以怎么做</h3>
+              <p>{latestFeedback.hint}</p>
             </div>
             <div className="feedback-card role-tip">
               <h3>{latestFeedback.roleLabel}提示</h3>
@@ -268,14 +286,6 @@ export function EventForm({
             <div className="feedback-card psychology">
               <h3>心理学提示</h3>
               <p>{latestFeedback.narrative}</p>
-            </div>
-            <div className="feedback-card original-detail">
-              <h3>你记录的真实事件</h3>
-              <p>{latestFeedback.detail}</p>
-            </div>
-            <div className="feedback-card hint">
-              <h3>陪伴原则</h3>
-              <p>{latestFeedback.hint}</p>
             </div>
 
             {latestFeedback.seasonThemeTitle && (

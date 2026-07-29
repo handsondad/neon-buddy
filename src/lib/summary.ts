@@ -1,4 +1,6 @@
 import type { AppConfig, MemoryItem, StatKey, StageKey, LifeSkillKey, FeedbackView, HandoffSummaryEntry, AchievementBadge } from "../types";
+import { appConfig } from "../config/appConfig";
+import { sanitizeCopy } from "./ethics";
 
 export function getWeekMemories(memories: MemoryItem[], currentDay: number): MemoryItem[] {
   const startDay = Math.max(1, currentDay - 6);
@@ -138,24 +140,40 @@ export function buildFeedback(
   storyProgress: Record<string, Record<string, number>>,
   storyLastVariant: Record<string, string>
 ): FeedbackView {
+  const type = eventType as keyof typeof appConfig.eventRules;
+  const role = caregiverRole as keyof typeof appConfig.caregiverRoles;
+  const rule = appConfig.eventRules[type] || appConfig.eventRules.emotion;
+  const roleConfig = appConfig.caregiverRoles[role] || appConfig.caregiverRoles.parent;
+  const roleTip = appConfig.roleEventTips[role]?.[type] || appConfig.roleEventTips.parent.emotion;
+  const emotion = appConfig.emotionEducation[type] || appConfig.emotionEducation.emotion;
+  const expert = appConfig.expertCards[type] || appConfig.expertCards.default;
+  const handoff = appConfig.handoffTemplates[type] || appConfig.handoffTemplates.emotion;
+  const seasonal = appConfig.seasonalThemes.find((item) => day >= item.window.startDay && day <= item.window.endDay);
+  const skillMap: Partial<Record<keyof typeof appConfig.eventRules, LifeSkillKey>> = {
+    meal: "mealRoutine", sleep: "sleepRoutine", learning: "requesting", emotion: "conflictRepair"
+  };
+  const skillKey = skillMap[type];
+  const skillGoal = skillKey ? appConfig.lifeSkillGoals[skillKey] : undefined;
+  const skillCount = skillKey ? (skillProgress[skillKey] || 0) : 0;
+  const safe = (text: string) => sanitizeCopy(text.replace(/\{name\}/g, childName), appConfig.ethicalCopy);
   return {
-    childText: "",
-    roleTip: "",
-    narrative: "",
-    hint: "",
+    childText: safe(intensity >= 4 ? roleConfig.highIntensityTemplate : roleConfig.normalTemplate),
+    roleTip: safe(roleTip),
+    narrative: safe(rule.narrative),
+    hint: safe(`下一步：先回应${emotion.emotionLabel}，再尝试${emotion.guidance[0] || "给出一个小而明确的选择"}。`),
     detail: detail,
-    roleLabel: caregiverRole,
-    seasonThemeTitle: "",
-    seasonFestivalName: "",
-    seasonAtmosphere: "",
-    seasonCue: "",
-    seasonBranchPrompt: "",
-    familyTone: "",
-    familyHandoff: "",
-    skillTitle: "",
-    skillProgressText: "",
-    skillCoachingTip: "",
-    skillCompletionHint: "",
+    roleLabel: appConfig.caregiverRoles[role]?.label || "照护者",
+    seasonThemeTitle: seasonal?.title || "",
+    seasonFestivalName: seasonal?.festivalName || "",
+    seasonAtmosphere: seasonal?.atmosphere || "",
+    seasonCue: seasonal?.caregiverCue || "",
+    seasonBranchPrompt: seasonal?.memoryBranchPrompts[0] || "",
+    familyTone: appConfig.familyRoleGuides[role]?.tone || "",
+    familyHandoff: appConfig.familyRoleGuides[role]?.handoff || "",
+    skillTitle: skillGoal?.title || "",
+    skillProgressText: skillGoal ? `${Math.min(skillGoal.targetCount, skillCount + 1)}/${skillGoal.targetCount}` : "",
+    skillCoachingTip: skillGoal?.coachingTip || "",
+    skillCompletionHint: skillGoal?.completionHint || "",
     storyTitle: "",
     storyPremise: "",
     storySignal: "",
@@ -166,18 +184,18 @@ export function buildFeedback(
     storyProgressText: "",
     storyUnlockedText: "",
     storyNextGoal: "",
-    handoffTrigger: "",
-    handoffEffective: "",
-    handoffAvoid: "",
-    handoffDirection: "",
-    emotionLabel: "",
-    emotionRecognition: "",
-    emotionAcceptance: "",
-    emotionGuidance: [],
-    expertTitle: "",
-    expertInsight: "",
-    expertTips: [],
-    expertSource: ""
+    handoffTrigger: handoff.triggerCue,
+    handoffEffective: handoff.effectiveAction,
+    handoffAvoid: handoff.avoidAction,
+    handoffDirection: `${handoff.schoolToHome} ${handoff.homeToSchool}`.trim(),
+    emotionLabel: emotion.emotionLabel,
+    emotionRecognition: emotion.recognition,
+    emotionAcceptance: emotion.acceptance,
+    emotionGuidance: emotion.guidance,
+    expertTitle: expert.title,
+    expertInsight: expert.insight,
+    expertTips: expert.actionTips,
+    expertSource: expert.source
   };
 }
 

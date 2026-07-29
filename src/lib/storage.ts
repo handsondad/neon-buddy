@@ -3,6 +3,7 @@ import type { AppState } from "../types";
 export const STORAGE_KEY = "xyr_virtual_child_v1";
 export const ACCOUNT_KEY = "xyr_current_account_v1";
 export const DEFAULT_ACCOUNT_ID = "guest";
+export const ONBOARDING_KEY = "xyr_onboarding_complete_v1";
 
 export function getAccountStorageKey(accountId: string): string {
   return `${STORAGE_KEY}:${accountId}`;
@@ -27,6 +28,14 @@ export function loadCurrentAccountId(): string {
 
 export function persistCurrentAccountId(accountId: string): void {
   localStorage.setItem(ACCOUNT_KEY, accountId);
+}
+
+export function hasCompletedOnboarding(accountId: string): boolean {
+  return localStorage.getItem(`${ONBOARDING_KEY}:${accountId}`) === "1";
+}
+
+export function markOnboardingComplete(accountId: string): void {
+  localStorage.setItem(`${ONBOARDING_KEY}:${accountId}`, "1");
 }
 
 export function loadState(accountId: string, defaultState: AppState): AppState {

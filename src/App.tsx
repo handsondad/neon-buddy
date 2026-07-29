@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
+import { Onboarding } from "./components/Onboarding";
+import { Settings } from "./components/Settings";
 import { Dashboard } from "./components/Dashboard";
 import { EventForm } from "./components/EventForm";
 import { Profile } from "./components/Profile";
@@ -15,7 +17,10 @@ import {
   loadState,
   normalizeAccountId,
   persistCurrentAccountId,
-  saveState
+  saveState,
+  hasCompletedOnboarding,
+  markOnboardingComplete,
+  getAccountStorageKey
 } from "./lib/storage";
 import {
   calcAverageIntensity,
@@ -64,7 +69,7 @@ import type {
   TaskRewardHistoryEntry
 } from "./types";
 
-type TabKey = "dashboard" | "record" | "profile" | "reports" | "timeline";
+import type { TabKey } from "./components/Sidebar";
 
 interface AchievementBadge {
   key: string;
@@ -246,6 +251,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>("dashboard");
   const [accountId, setAccountId] = useState<string>(() => loadCurrentAccountId());
   const [state, setState] = useState<AppState>(() => normalizeAppState(loadState(loadCurrentAccountId(), defaultState)));
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => !hasCompletedOnboarding(loadCurrentAccountId()));
   const [formEventType, setFormEventType] = useState<EventType>("meal");
   const [formDetail, setFormDetail] = useState("");
   const [formCaregiverRole, setFormCaregiverRole] = useState<CaregiverRole>("parent");
@@ -417,6 +423,38 @@ export default function App() {
     setState(nextState);
     saveState(accountId, nextState);
     setCloudStatus({ message: "已清空当前账号本地数据", type: "warn" });
+  }
+
+  function onCompleteOnboarding(name: string, stage: AppState["stage"], role: CaregiverRole): void {
+    const nextState = { ...state, childName: name, stage };
+    setState(nextState);
+    saveState(accountId, nextState);
+    setFormCaregiverRole(role);
+    markOnboardingComplete(accountId);
+    setShowOnboarding(false);
+    setActiveTab("record");
+    setCloudStatus({ message: "准备好了，写下第一条真实事件吧", type: "ok" });
+  }
+
+  function onExportData(): void {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `neon-buddy-${accountId}-data.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setCloudStatus({ message: "数据已导出", type: "ok" });
+  }
+
+  function onDeleteData(): void {
+    if (!window.confirm("确定删除当前账号的本地数据吗？此操作不可撤销。")) return;
+    localStorage.removeItem(getAccountStorageKey(accountId));
+    const nextState = normalizeAppState({ ...defaultState });
+    setState(nextState);
+    setLatestFeedback(emptyFeedback);
+    setShowOnboarding(true);
+    setCloudStatus({ message: "本地数据已删除", type: "warn" });
   }
 
   async function onSwitchAccount(): Promise<void> {
@@ -774,6 +812,7 @@ export default function App() {
                 handoffSummary={handoffSummary}
                 recentHandoffEntries={recentHandoffEntries}
                 onCopyHandoff={onCopyHandoff}
+                onRecord={() => setActiveTab("record")}
               />
             )}
             {activeTab === "record" && (
@@ -782,6 +821,11 @@ export default function App() {
                 onSubmit={onSubmitEvent}
                 onClearDetail={onClearDetail}
                 onChangeEventType={onChangeEventType}
+                onChangeDetail={setFormDetail}
+                caregiverRole={formCaregiverRole}
+                intensity={formIntensity}
+                onChangeCaregiverRole={setFormCaregiverRole}
+                onChangeIntensity={setFormIntensity}
                 onFillFromLatestSameType={onFillFromLatestSameType}
                 onApplyQuickTemplate={onApplyQuickTemplate}
                 onStructureEventDetail={onStructureEventDetail}
@@ -825,7 +869,11 @@ export default function App() {
               />
             )}
             {activeTab === "timeline" && <Timeline state={state} />}
+            {activeTab === "settings" && <Settings accountId={accountId} state={state} onExport={onExportData} onDelete={onDeleteData} />}
           </div>
+          {showOnboarding && (
+            <Onboarding initialName={state.childName} onComplete={onCompleteOnboarding} />
+          )}
         </main>
       </div>
       <div className="cloud-status" style={{

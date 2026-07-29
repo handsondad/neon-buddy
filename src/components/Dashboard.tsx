@@ -9,9 +9,10 @@ interface DashboardProps {
   handoffSummary: ReturnType<typeof buildHandoffSummary>;
   recentHandoffEntries: HandoffSummaryEntry[];
   onCopyHandoff: (entry: HandoffSummaryEntry) => void;
+  onRecord: () => void;
 }
 
-export function Dashboard({ state, weekMemories, handoffSummary, recentHandoffEntries, onCopyHandoff }: DashboardProps) {
+export function Dashboard({ state, weekMemories, handoffSummary, recentHandoffEntries, onCopyHandoff, onRecord }: DashboardProps) {
   const topType = calcTopType(weekMemories) as EventType | "";
   const topRole = calcTopRole(weekMemories) as CaregiverRole;
   const avgIntensity = calcAverageIntensity(weekMemories);
@@ -25,6 +26,14 @@ export function Dashboard({ state, weekMemories, handoffSummary, recentHandoffEn
 
   return (
     <div className="dashboard">
+      <div className="daily-loop-card">
+        <div>
+          <span className="eyebrow">今日陪伴 · 第 {state.day} 天</span>
+          <h2>{weekMemories.length ? "今天已经留下足迹" : "给今天留下一条真实记录"}</h2>
+          <p>{weekMemories.length ? "回看最近一次反馈，选择一个小动作继续陪伴。" : "记录一件吃饭、睡眠、情绪或互动时刻，预计 3 分钟完成。"}</p>
+        </div>
+        <button className="btn btn-primary" onClick={onRecord}>{weekMemories.length ? "继续记录" : "开始记录"}</button>
+      </div>
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon blue">
