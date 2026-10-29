@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "expectedRevision": 1,
+  "writer": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" },
+  "sources": [],
+  "observations": [],
+  "analyses": [],
+  "topics": [
+    {
+      "id": "topic-example-participation",
+      "title": "不同活动中，他如何选择参与？",
+      "question": "现有材料能否区分规则理解、活动偏好与参与方式？",
+      "domain": "relationships",
+      "scope": "只使用合成桌游片段；尚无跨场景材料，不判断稳定性格。",
+      "status": "open",
+      "cardRefs": [
+        { "id": "concept-support-needs", "version": 1 },
+        { "id": "concept-informant-context", "version": 1 },
+        { "id": "method-alternatives", "version": 1 }
+      ],
+      "createdAt": "2026-10-25T13:00:00.000Z",
+      "createdBy": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" },
+      "supersedes": null
+    }
+  ],
+  "runs": [
+    {
+      "id": "run-example-insufficient",
+      "topicId": "topic-example-participation",
+      "inputRevision": 1,
+      "status": "insufficient",
+      "readObservationIds": ["obs-example-001"],
+      "outputAnalysisIds": [],
+      "cardRefs": [
+        { "id": "concept-support-needs", "version": 1 },
+        { "id": "concept-informant-context", "version": 1 },
+        { "id": "method-alternatives", "version": 1 }
+      ],
+      "comparison": "只有一次新桌游活动，缺少相近任务与不同情境，不能进行可比分析。",
+      "counterSearch": "检查当前库唯一观察，没有其他片段可作为反例；不代表现实中没有反例。",
+      "limitations": ["单次且来自单一报告者，无法区分不同解释。", "本例是手工合成，不是实际工具执行证明。"],
+      "changeReason": "将后续想了解的问题保存为专题；现阶段不增加新的解释。",
+      "finishedAt": "2026-10-25T13:00:00.000Z",
+      "performedBy": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" }
+    }
+  ],
+  "deleteObservationIds": [],
+  "deleteSourceIds": [],
+  "deleteAnalysisIds": []
+}

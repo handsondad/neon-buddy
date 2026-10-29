@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "expectedRevision": 0,
+  "writer": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" },
+  "child": { "id": "local-child", "alias": "合成示例", "birthMonth": null },
+  "sources": [
+    {
+      "id": "src-example-001",
+      "kind": "caregiver",
+      "reporter": "合成家长",
+      "capturedAt": "2026-10-20T12:00:00.000Z",
+      "content": "【合成示例】今天在新的桌游小组，他问主持人怎么玩，说“我不知道这个规则”。主持人示范了一轮，他随后加入。",
+      "recordedBy": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" }
+    }
+  ],
+  "observations": [
+    {
+      "id": "obs-example-001",
+      "sourceId": "src-example-001",
+      "sourceExcerpt": "【合成示例】今天在新的桌游小组，他问主持人怎么玩，说“我不知道这个规则”。主持人示范了一轮，他随后加入。",
+      "occurredOn": "2026-10-20",
+      "recordedAt": "2026-10-20T12:00:00.000Z",
+      "domains": ["relationships", "communication"],
+      "context": {
+        "setting": "community",
+        "familiarity": "new",
+        "activity": "桌游小组",
+        "people": "孩子与主持人",
+        "antecedent": null,
+        "response": "主持人示范了一轮",
+        "outcome": "他随后加入"
+      },
+      "behavior": "他问主持人怎么玩",
+      "signals": [{ "code": "asks_help", "excerpt": "他问主持人怎么玩" }],
+      "childExpression": { "text": "我不知道这个规则", "fidelity": "recalled" },
+      "recordedBy": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" },
+      "supersedes": null
+    }
+  ],
+  "analyses": [
+    {
+      "id": "analysis-example-001",
+      "domain": "relationships",
+      "title": "规则理解可能与这次参与方式有关",
+      "question": "这一片段能说明什么，不能说明什么？",
+      "claim": "只在这次新桌游活动中，材料记录了先询问规则、看到示范后加入的顺序。这可以作为了解参与条件的线索，不能据此判断稳定性格或支持效果。",
+      "conditions": "仅限2026-10-20这次活动的家长叙述。",
+      "alternatives": ["也可能与活动偏好、主持人的邀请或其他未记录背景有关。"],
+      "limitations": ["只有单次、单一报告者材料，没有可比反例；无法推出因果。"],
+      "followUps": ["如自然出现其他活动，可保留规则是否清楚、孩子自己的表达和后续经过，不刻意制造测试。"],
+      "supportingIds": ["obs-example-001"],
+      "counterIds": [],
+      "theoryIds": ["informants", "motivation"],
+      "generatedAt": "2026-10-20T12:30:00.000Z",
+      "generatedBy": { "name": "合成示例Agent", "tool": "手工编写示例，非实际模型结果" },
+      "supersedes": null
+    }
+  ],
+  "deleteObservationIds": [],
+  "deleteSourceIds": [],
+  "deleteAnalysisIds": []
+}
