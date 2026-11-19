@@ -1,15 +1,19 @@
 {
   "name": "neon-buddy",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "start": "npm run build && npm run preview",
-    "dev": "vite --config vite.config.ts",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
-    "kb": "node scripts/knowledge-cli.mjs",
-    "build": "tsc -b && vite build --config vite.config.ts",
-    "preview": "vite preview --config vite.config.ts"
+    "check": "node tests/qa-rules.mjs",
+    "comics": "node tools/comics.mjs",
+    "snapshot": "node tools/snapshot.mjs",
+    "font": "node tools/font/subset.mjs",
+    "voice": "node tools/voice/generate.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -19,6 +23,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.4.1",
+    "puppeteer-core": "^24.43.1",
     "typescript": "^5.6.2",
     "vite": "^5.4.8"
   }

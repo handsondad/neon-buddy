@@ -1,5 +1,22 @@
-node_modules
-dist
-.vite
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
 *.log
+.env
+.env.*
+
+# snapshot 工具的输出，给 agent 自查用，不进仓库
+snapshots/
+
+# npm run font 自动下载的完整字体，只留截出来的子集
+tools/font/.cache/
+
+# 没公开过的家里材料、和小念聊的原始记录，不进仓库
+private/
 knowledge/private/
+
+.vscode/
+.DS_Store

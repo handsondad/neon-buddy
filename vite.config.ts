@@ -1,12 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { knowledgeApi } from "./scripts/knowledge-api.mjs";
 
 export default defineConfig({
-  plugins: [knowledgeApi(), react()],
-  server: {
-    host: "127.0.0.1", port: 52947, strictPort: true,
-    fs: { deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "**/knowledge/private/**"] }
-  },
-  preview: { host: "127.0.0.1", port: 52947, strictPort: true }
+  // 相对路径：部署在 GitHub Pages 的 /<仓库名>/ 子路径下也能找到资源（路由用的是 hash，不受影响）
+  base: "./",
+  plugins: [react()]
 });
