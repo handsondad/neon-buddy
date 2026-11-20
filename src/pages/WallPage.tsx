@@ -108,6 +108,7 @@ export function WallPage() {
       if (drag.moved) el.scrollLeft = drag.left - dx;
     };
     const up = () => {
+      pressing.current = false;
       if (drag?.moved) draggedAt = Date.now();
       drag = null;
       el.classList.remove("dragging");
@@ -130,23 +131,28 @@ export function WallPage() {
     el.addEventListener("pointerdown", down);
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
     el.addEventListener("click", click, true);
     el.addEventListener("wheel", wheel, { passive: false });
     return () => {
       el.removeEventListener("pointerdown", down);
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
       el.removeEventListener("click", click, true);
       el.removeEventListener("wheel", wheel);
     };
   }, []);
 
+  // 鼠标一按下按钮就拿到焦点；按着拖绳子时别因为这个把起点那张选中
+  const pressing = useRef(false);
   const onKey = (e: KeyboardEvent) => {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     const next = keys[keys.indexOf(chosen ?? "") + (e.key === "ArrowLeft" ? -1 : 1)];
     if (!next) return;
     e.preventDefault();
     setPicked(next);
+    setPeek(null);
     document.getElementById(`slot-${next}`)?.focus();
   };
 
@@ -156,7 +162,8 @@ export function WallPage() {
     "aria-selected": key === chosen,
     tabIndex: key === chosen ? 0 : -1,
     onMouseEnter: () => setPeek(key),
-    onFocus: () => setPicked(key),
+    onPointerDown: () => { pressing.current = true; },
+    onFocus: () => { if (!pressing.current) setPicked(key); },
   });
 
   const rope = `M ${size.pad / 2},${size.top} Q ${width / 2},${size.top + size.sag * 2} ${width - size.pad / 2},${size.top}`;

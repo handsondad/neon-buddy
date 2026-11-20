@@ -140,8 +140,8 @@ button, a { font-family: inherit; }
 .banner:hover .banner-fold, .banner.on .banner-fold { background: rgba(255, 255, 255, 0.5); }
 .banner.on { translate: 0 4px; }
 .banner.on .banner-cloth { animation: none; }
-.banner:focus-visible { outline: none; }
-.banner:focus-visible .banner-cloth { outline: 3px solid var(--focus); }
+/* 旗面有 clip-path，画在它身上的焦点框会被剪掉，所以画在按钮上 */
+.banner:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
 
 .tag {
   position: absolute; padding: 0; border: 0; background: none; cursor: pointer;
@@ -228,7 +228,7 @@ button, a { font-family: inherit; }
 .group-preview .mosaic[data-count="1"] { grid-template-columns: 1fr; }
 .group-preview .mosaic[data-count="2"],
 .group-preview .mosaic[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
-.group-preview .mosaic a { display: block; border-radius: 4px; overflow: hidden; transition: transform 140ms; }
+.group-preview .mosaic a { display: block; text-decoration: none; border-radius: 4px; overflow: hidden; transition: transform 140ms; }
 .group-preview .mosaic a:hover { transform: scale(1.04); }
 .group-preview .mosaic .mini { aspect-ratio: 1; height: auto; font-size: 40px; }
 .kids { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 16px; }
@@ -282,7 +282,7 @@ a.cat-chip:hover { background: color-mix(in srgb, var(--cat) 40%, #fff); }
 
 .qa-chat { display: grid; gap: 18px; margin-top: 26px; }
 .qa-turn { display: grid; gap: 12px; }
-.qa-line { display: flex; gap: 10px; align-items: flex-start; animation: qa-pop 0.35s both; animation-delay: calc(min(var(--i, 0), 8) * 70ms); }
+.qa-line { display: flex; gap: 10px; align-items: flex-start; scroll-margin-bottom: 96px; animation: qa-pop 0.35s both; animation-delay: calc(min(var(--i, 0), 8) * 70ms); }
 .qa-line.is-nian { flex-direction: row-reverse; }
 .qa-avatar {
   flex: 0 0 auto; width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: #fff;
@@ -308,6 +308,8 @@ a.cat-chip:hover { background: color-mix(in srgb, var(--cat) 40%, #fff); }
 .qa-line.speaking .qa-bubble { box-shadow: 0 0 0 4px var(--accent-orange), 0 6px 0 rgba(61, 48, 39, 0.12); transform: scale(1.015); }
 .qa-line.speaking .qa-avatar { animation: talk 0.6s ease-in-out infinite alternate; }
 @keyframes talk { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+/* 底下浮着正在播放的按钮：滚到正在说的那句时（scroll-margin-bottom）和页面最底下都给它让出地方 */
+.app.qa { padding-bottom: 100px; }
 .qa-player {
   position: fixed; left: 50%; bottom: 18px; z-index: 10; transform: translateX(-50%);
   min-height: 44px; padding: 0 20px; border-radius: 999px; border: 3px solid var(--ink); cursor: pointer;

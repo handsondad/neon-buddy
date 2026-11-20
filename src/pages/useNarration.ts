@@ -11,8 +11,11 @@ const GAP = 350;
  */
 export function useNarration(record: QaRecord) {
   const lines = linesFor(record);
-  const [now, setNow] = useState<Line | null>(null);
+  // 记下是哪一条在读：换到下一条时，停下之前那一下不会把上一条的句子标到新页面上
+  const [playing, setNow] = useState<{ id: string; line: Line } | null>(null);
+  const now = playing?.id === record.id ? playing.line : null;
   const audio = useRef<HTMLAudioElement | null>(null);
+  const ahead = useRef<HTMLAudioElement | null>(null);
   const timer = useRef<number>();
   const run = useRef(0);
 
@@ -32,8 +35,11 @@ export function useNarration(record: QaRecord) {
       if (id !== run.current) return;
       const line = lines[i];
       if (!line) { setNow(null); return; }
-      setNow(line);
+      setNow({ id: record.id, line });
       player.src = clipUrl(record.id, line);
+      // 先把下一句拿下来，两句之间不用再等网络
+      const after = lines[i + 1];
+      if (after) (ahead.current ??= Object.assign(new Audio(), { preload: "auto" })).src = clipUrl(record.id, after);
       player.onended = () => { timer.current = window.setTimeout(() => say(i + 1), GAP); };
       player.onerror = () => { if (id === run.current) setNow(null); };
       player.play().catch(() => { if (id === run.current) setNow(null); });
