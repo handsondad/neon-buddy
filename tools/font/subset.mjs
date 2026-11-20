@@ -1,4 +1,4 @@
-// 从完整的站酷快乐体里只截出网站用到的字，生成 public/fonts/buddy.woff。
+// 从完整的站酷快乐体里只截出网站用到的字，生成 public/fonts/buddy.woff2。
 // 完整字库 1.5 MB，截完一般只有几十 KB。问答或页面加了新字，就重跑一次：npm run font
 //
 // 需要 Python 和 fontTools：python -m pip install fonttools
@@ -52,11 +52,11 @@ async function main() {
   writeFileSync(CHARS_FILE, chars);
   execFileSync("python", [
     "-m", "fontTools.subset", source,
-    `--text-file=${CHARS_FILE}`, "--flavor=woff", `--output-file=${join(outDir, "buddy.woff")}`,
+    `--text-file=${CHARS_FILE}`, "--flavor=woff2", `--output-file=${join(outDir, "buddy.woff2")}`,
     "--layout-features=*",
   ], { stdio: "inherit" });
-  const size = statSync(join(outDir, "buddy.woff")).size;
-  console.log(`${[...chars].length} 个字 → public/fonts/buddy.woff（${(size / 1024).toFixed(0)} KB）`);
+  const size = statSync(join(outDir, "buddy.woff2")).size;
+  console.log(`${[...chars].length} 个字 → public/fonts/buddy.woff2（${(size / 1024).toFixed(0)} KB）`);
 }
 
 const entry = process.argv[1] && pathToFileURL(resolve(process.argv[1])).href;

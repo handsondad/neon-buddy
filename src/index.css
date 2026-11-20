@@ -1,7 +1,7 @@
-/* 颜色、圆角、晾衣绳和《小念的画廊》《小念家的漫画书》保持一个系列；字统一用站酷快乐体（public/fonts/buddy.woff，npm run font 生成） */
+/* 颜色、圆角、晾衣绳和《小念的画廊》《小念家的漫画书》保持一个系列；字统一用站酷快乐体（public/fonts/buddy.woff2，npm run font 生成） */
 @font-face {
   font-family: "BuddyFont";
-  src: url("/fonts/buddy.woff") format("woff");
+  src: url("/fonts/buddy.woff2") format("woff2");
   font-display: block;
 }
 

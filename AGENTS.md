@@ -45,7 +45,7 @@
 - `src/qa/voice.ts` + `src/qa/voice-manifest.json`：配音的时长和指纹（manifest 是生成的，别手改）；音频在 `public/voice/<id>/<轮次>-<nian|dad>.mp3`
 - `src/pages/useNarration.ts`：问答页按顺序播放配音
 - `tools/voice/`：配音生成，声音设置在 `voices.mjs`（和《身体奇遇记》一样）
-- `public/comics/<故事>/thumb.webp`：漫画书小封面；`public/avatars/`：头像；`public/fonts/buddy.woff`：站酷快乐体子集（OFL）
+- `public/comics/<故事>/thumb.webp`：漫画书小封面；`public/avatars/`：头像；`public/fonts/buddy.woff2`：站酷快乐体子集（OFL）
 - `tools/comics.mjs`：截漫画；`tools/snapshot.mjs`：截页面；`tools/font/subset.mjs`：截字体
 - `tests/qa-rules.mjs`：内容检查器
 

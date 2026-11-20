@@ -141,7 +141,7 @@ async function main() {
     for (const a of ["nian-thinking", "nian-proud", "dad-happy"]) {
       if (!existsSync(join(root, "public/avatars", `${a}.webp`))) errors.push(`avatars: 缺 public/avatars/${a}.webp（npm run comics）`);
     }
-    if (!existsSync(join(root, "public/fonts/buddy.woff"))) errors.push("font: 缺 public/fonts/buddy.woff（npm run font）");
+    if (!existsSync(join(root, "public/fonts/buddy.woff2"))) errors.push("font: 缺 public/fonts/buddy.woff2（npm run font）");
     else {
       const chars = new Set(readFileSync(join(root, "public/fonts/buddy-chars.txt"), "utf8"));
       const { collect } = await import("../tools/font/subset.mjs");

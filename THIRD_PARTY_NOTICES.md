@@ -4,7 +4,7 @@
 
 - 来源：https://github.com/google/fonts/tree/main/ofl/zcoolkuaile
 - 许可：SIL Open Font License 1.1（`public/fonts/OFL.txt`，和字体一起发布）
-- 使用：子集化后放在 `public/fonts/buddy.woff`，用 `npm run font` 生成
+- 使用：子集化后放在 `public/fonts/buddy.woff2`，用 `npm run font` 生成
 
 ## 配音（Microsoft Edge 在线语音）
 
